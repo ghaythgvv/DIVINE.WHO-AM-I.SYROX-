@@ -1,10 +1,14 @@
 require("dotenv").config();
 
-const { Client, GatewayIntentBits, Events, ChannelType } = require("discord.js");
+const { Client, GatewayIntentBits, Events, ChannelType, ActivityType } = require("discord.js");
 const { joinVoiceChannel, VoiceConnectionStatus, entersState } = require("@discordjs/voice");
 
 const GUILD_ID = process.env.GUILD_ID;
 const DEFAULT_CHANNEL_ID = "1557587230531256390";
+
+// Streaming status (purple). The URL must be a real Twitch or YouTube link, or Discord shows normal "Playing".
+const STREAM_TEXT = process.env.STREAM_TEXT || "24/7 in voice";
+const STREAM_URL = process.env.STREAM_URL || "https://www.twitch.tv/discord";
 
 // 3 bots: each has its own token. Channel defaults to the one above,
 // or set VOICE_CHANNEL_ID_1 / _2 / _3 in the variables to give a bot its own channel.
@@ -82,6 +86,15 @@ function startBot({ name, token, channelId }) {
 
   client.once(Events.ClientReady, async (bot) => {
     console.log(`[${name}] Logged in as ${bot.user.tag}`);
+
+    const setStreaming = () =>
+      bot.user.setPresence({
+        status: "online",
+        activities: [{ name: STREAM_TEXT, type: ActivityType.Streaming, url: STREAM_URL }]
+      });
+    setStreaming();
+    setInterval(setStreaming, 10 * 60 * 1000); // re-apply every 10 min so it never resets
+
     await connectToVC();
   });
 
