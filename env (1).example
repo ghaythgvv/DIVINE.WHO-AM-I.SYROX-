@@ -1,0 +1,9 @@
+GUILD_ID=your_server_id
+TOKEN_1=first_bot_token
+TOKEN_2=second_bot_token
+TOKEN_3=third_bot_token
+
+# Optional: only if a bot should sit in a different channel than the default
+# VOICE_CHANNEL_ID_1=
+# VOICE_CHANNEL_ID_2=
+# VOICE_CHANNEL_ID_3=
