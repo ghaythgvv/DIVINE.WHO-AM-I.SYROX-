@@ -98,6 +98,14 @@ function startBot({ name, token, channelId }) {
     await connectToVC();
   });
 
+  // Rejoin when the bot is kicked, disconnected or moved out of its channel.
+  client.on(Events.VoiceStateUpdate, (oldState, newState) => {
+    if (newState.id !== client.user.id) return;      // only watch this bot itself
+    if (newState.channelId === channelId) return;    // still in the right channel
+    console.log(`[${name}] Not in its VC anymore (kicked/moved). Rejoining...`);
+    scheduleReconnect();
+  });
+
   client.login(token).catch((err) => {
     console.error(`[${name}] Login failed:`, err.message);
   });
